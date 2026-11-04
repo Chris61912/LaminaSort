@@ -18,10 +18,9 @@ option("trace")
     set_description("Enable verbose runtime diagnostics")
 option_end()
 
--- The "v" form checks out the upstream git tag directly; the LeviMC xmake-repo
--- had not published a 26.51.3 version entry when this was written. Switch to
--- "levilamina 26.51.3" once it has one.
-add_requires("levilamina v26.51.3", {configs = {target_type = get_config("target_type")}})
+-- Pin the upstream client SDK tag for this source-port candidate. A clean
+-- Windows rebuild is required; changing metadata does not update an old DLL.
+add_requires("levilamina v26.60.0", {configs = {target_type = get_config("target_type")}})
 
 add_requires("levibuildscript")
 

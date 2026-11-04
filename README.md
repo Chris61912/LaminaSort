@@ -12,8 +12,11 @@ touches server-authoritative state directly.
 
 ## Target
 
-* LeviLamina **v26.51.3** (client)
-* Minecraft Bedrock Edition **1.26.51.x** (Windows x64)
+* **Source-port candidate:** LeviLamina **v26.60.0** (client), Windows x64.
+* Use the game version matching the SDK's client data (`v26.60.5-client.5`).
+* **Uncompiled / not runtime-validated:** see [PORT-26.60.md](PORT-26.60.md)
+  for exact header evidence, clean Windows build instructions and the
+  disposable-world acceptance checklist. No verified 26.60 DLL is supplied.
 
 Requires only the Minecraft client with LeviLamina: no server mod, operator
 permissions, cheats, commands or experiments.
@@ -189,7 +192,8 @@ and text-box focus changes at debug level and mirrors them, flushed
 immediately, to `mods/LaminaSort/trace.log` (appended across runs).
 
 Building against the LeviLamina SDK needs an LLVM that the SDK package can be
-compiled with; the 26.51.x SDK was verified with LLVM 22.1.8 (`clang-cl`).
+compiled with; use LLVM 22 (`clang-cl`) for this candidate. The 26.51.x SDK
+was verified with LLVM 22.1.8, but this 26.60 source port has not been compiled.
 If the `levilamina` package fails to compile with the Visual Studio-bundled
 LLVM, put a matching LLVM `bin` directory first on `PATH` for `xmake f`.
 

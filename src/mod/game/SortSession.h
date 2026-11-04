@@ -5,6 +5,7 @@
 
 class ContainerScreenController;
 class CreativeItemRegistry;
+class IClientInstance;
 
 namespace ll::io {
 class Logger;
@@ -40,9 +41,11 @@ public:
     static std::string describeScreen(ContainerScreenController& controller);
 
     /// Runs the sort. Returns true when the region ended in the planned
-    /// state (including "nothing to do").
+    /// state (including "nothing to do"). Refuses to start without a local
+    /// player and readable UI cursor slot, or while that slot holds an item.
     static bool
     run(ContainerScreenController&  controller,
+        IClientInstance&            client,
         SortRegion const&           region,
         CreativeItemRegistry const* creativeRegistry,
         ll::io::Logger&             logger);
