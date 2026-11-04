@@ -6,8 +6,13 @@
 
 #include "ll/api/io/Logger.h"
 
+#include "mc/client/game/IClientInstance.h"
 #include "mc/client/gui/screens/controllers/ContainerScreenController.h"
+#include "mc/client/player/LocalPlayer.h"
 #include "mc/deps/shared_types/legacy/ContainerType.h"
+#include "mc/world/PlayerUIContainer.h"
+#include "mc/world/actor/player/Player.h"
+#include "mc/world/actor/player/PlayerUISlot.h"
 #include "mc/world/containers/SlotData.h"
 #include "mc/world/containers/managers/controllers/ContainerManagerController.h"
 #include "mc/world/item/ItemStack.h"
@@ -132,6 +137,7 @@ std::string SortSession::describeScreen(ContainerScreenController& controller) {
 
 bool SortSession::run(
     ContainerScreenController&  controller,
+    IClientInstance&            client,
     SortRegion const&           region,
     CreativeItemRegistry const* creativeRegistry,
     ll::io::Logger&             logger
@@ -141,7 +147,22 @@ bool SortSession::run(
         logger.warn("Sort aborted: screen has no container manager");
         return false;
     }
-    if (controller._isCursorSelectedActive()) {
+    auto* player = client.getLocalPlayer();
+    if (!player) {
+        logger.warn("Sort aborted: no local player to check the cursor");
+        return false;
+    }
+    // 26.60 removed the screen's cursor helper. The player's UI container
+    // is embedded TypedStorage, not a nullable pointer. Fail closed if its
+    // cursor slot is unavailable; never read it or start transfers then.
+    auto const& uiContainer = player->mPlayerUIContainer.get();
+    int const   cursorSlot  = static_cast<int>(PlayerUISlot::CursorSelected);
+    if (uiContainer.getContainerSize() <= cursorSlot) {
+        logger.warn("Sort aborted: player UI cursor slot is unavailable");
+        return false;
+    }
+    auto const& cursorItem = uiContainer.getItem(cursorSlot);
+    if (!cursorItem.isNull() && cursorItem.mCount > 0) {
         logger.info("Sort skipped: an item is being held on the cursor");
         return false;
     }

@@ -124,7 +124,7 @@ void LaminaSort::onSortRequested(IClientInstance& client) {
     }
 
     logger.debug("Screen: {}", game::SortSession::describeScreen(*controller));
-    game::SortSession::run(*controller, *region, creativeRegistry, logger);
+    game::SortSession::run(*controller, client, *region, creativeRegistry, logger);
 }
 
 } // namespace lamina_sort
